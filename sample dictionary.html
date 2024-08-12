@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Word by Colormap</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .btn {
+            margin: 5px;
+            padding: 10px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            color: #fff;
+            cursor: pointer;
+        }
+        .blueButton { background-color: dodgerblue; }
+        .greenButton { background-color: mediumseagreen; }
+        .yellowButton { background-color: gold; }
+        .redButton { background-color: tomato; }
+        .whiteButton{ background-color: whitesmoke}
+        #searchButton { background-color: #333; }
+        #deleteButton{ background-color: #333;}
+        #clearButton{ background-color: #333;}
+        #colorSequenceContainer {
+            margin: 10px 0;
+            font-size: 16px;
+        }
+        #colorSequence {
+            display: flex;
+            flex-direction: row;
+            gap: 2px;
+        }
+        #result {
+            margin-top: 20px;
+        }
+        .word {
+            margin: 5px 0;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div>
+    <h1>Search Word by Colormap</h1>
+    <button class="blueButton btn" onclick="addColor('blue')"></button>
+    <button class="greenButton btn" onclick="addColor('green')"></button>
+    <button class="yellowButton btn" onclick="addColor('yellow')"></button>
+    <button class="redButton btn" onclick="addColor('red')"></button>
+    <button class="whiteButton btn" onclick="addColor('white')"></button>
+    <button id="searchButton" class="btn" onclick="searchWords()">Search Words</button>
+    <button id="deleteButton" class="btn" onclick="deleteLastSquare()">delete</button>
+    <div id="colorSequenceContainer">Colormap: <div id="colorSequence"></div></div>
+    
+    <div id="result"></div>
+    </div>
+    <script src="./all_words.js"></script>
+    <script src="./dictionary.js"></script>
+    <script>
+        const colorMap = {
+            'a': 'green', 'b': 'yellow', 'c': 'blue', 'd': 'red', 'e': 'green', 'f': 'blue', 'g': 'green', 'h': 'green',
+            'i': 'white', 'j': 'red', 'k': 'green', 'l': 'yellow', 'm': 'yellow', 'n': 'yellow', 'o': 'white', 'p': 'red',
+            'q': 'red', 'r': 'red', 's': 'red', 't': 'blue', 'u': 'yellow', 'v': 'yellow', 'w': 'yellow', 'x': 'yellow',
+            'y': 'blue', 'z': 'blue'
+        };
+
+        
+        let colorSequence = [];
+
+        function updateColorSequence() {
+            document.getElementById('colorSequence').innerHTML = ''
+            
+            for (let word of colorSequence) {
+                let square = document.createElement('div')
+                square.classList.add(`${word}Button`)
+                square.classList.add('btn')
+                document.getElementById('colorSequence').appendChild(square)
+            }
+        }
+        function addColor(color) {
+            colorSequence.push(color);
+            updateColorSequence();
+        }
+
+        function deleteLastSquare(){
+            colorSequence.pop();
+            updateColorSequence();
+        }
+
+        function getColorSequence(word) {
+            return word.split('').map(letter => colorMap[letter]).join('-');
+        }
+
+        function searchWords() {
+            const result = document.getElementById('result');
+            result.innerHTML = '';
+
+            if (colorSequence.length === 0) {
+                alert('Please select a color sequence.');
+                return;
+            }
+
+            const sequence = colorSequence.join('-');
+            const words = dictionary.filter(word => getColorSequence(word) === sequence);
+
+            if (words.length === 0) {
+                result.innerHTML = 'No words found.';
+                return;
+            }
+
+            words.forEach(word => {
+                const wordEntry = document.createElement('div');
+                wordEntry.className = 'word';
+                wordEntry.textContent = word;
+                result.appendChild(wordEntry);
+            });
+        }
+        
+    </script>
+</body>
+</html>
